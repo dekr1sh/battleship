@@ -6,16 +6,14 @@ function Ship(length) {
     }
 
     function hit() {
-        if (!isSunk()) {
-            hits++;
-        }
+        hits++;
     };
 
     function isSunk(){
-        return hits === length;
+        return hits >= length;
     }
 
-    return { length, hit, getHits, isSunk };
+    return { length, getHits, hit, isSunk };
 };
 
 export {Ship};
