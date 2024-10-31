@@ -1,6 +1,6 @@
 import { Gameboard } from './gameboard.js';
 
-function Player(type = 'real') {
+function Player(type = 'human') {
     const gameboard = Gameboard();
     const isComputer = type === 'computer';
 
