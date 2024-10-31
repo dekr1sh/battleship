@@ -7,31 +7,57 @@ function Gameboard() {
     const missedAttacks = new Set();
     const board = {}; // Maps coordinates to ships
 
-    function areCoordinatesOccupied(coordinates) {
-        for (const coord of coordinates) {
-            if (board[coord]) {
-                return true; 
-            }
-        }
-        return false; 
-    }
-
     function isInBounds(x, y) {
         return x >= 0 && x < gridSize && y >= 0 && y < gridSize;
     }
 
+    function parseCoordinate(coord) {
+        const [x, y] = coord.match(/\d+/g).map(strNum => +strNum);
+        return { x, y };
+    }
+
+    function areCoordinatesOccupied(coordinates) {
+        return coordinates.some(coord => Boolean(board[coord]));
+    }
+
+    function areCoordinatesAdjacent(coordinates) {
+        for (const coord of coordinates) {
+            const { x, y } = parseCoordinate(coord);
+
+            const adjacentCoords = [
+                `(${x + 1},${y})`,
+                `(${x - 1},${y})`,
+                `(${x},${y + 1})`,
+                `(${x},${y - 1})`, 
+                `(${x+1},${y+1})`,
+                `(${x-1},${y-1})`,
+                `(${x+1},${y-1})`,
+                `(${x-1},${y+1})`
+            ];
+
+            if (adjacentCoords.some(adjCoord => Boolean(board[adjCoord]))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function placeShip(length, coordinates) {
+        for (const coord of coordinates) {
+            const { x, y } = parseCoordinate(coord);
+            if(!isInBounds(x,y)) {
+                throw new Error(`Cannot place ship: one or more coordinates are out of bounds.`);
+            }
+        }
+        
         if (areCoordinatesOccupied(coordinates)) {
             throw new Error(`Cannot place ship: one or more coordinates are already occupied.`);
         }
 
-        coordinates.forEach(coord => {
-            const [x, y] = coord.match(/\d+/g).map(strNum => +strNum); 
-            if (!isInBounds(x, y)) {
-                throw new Error(`Cannot place ship: one or more coordinates is out of bounds.`);
-            }
-        });
-    
+        else if(areCoordinatesAdjacent(coordinates)) {
+            throw new Error(`Cannot place ship: one or more coordinates are adjacent.`)
+        }
+
         const ship = Ship(length);
         ships.push(ship);
     
