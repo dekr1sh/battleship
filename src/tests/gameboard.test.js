@@ -11,6 +11,12 @@ describe('Gameboard', () => {
         expect(gameboard.gridSize).toBe(10);
     });
 
+    test('can check if a ship is at a specific coordinate', () => {
+        gameboard.placeShip(2, ['(0,0)', '(0,1)']);
+        expect(gameboard.isShipAt('(0,0)')).toBe(true); 
+        expect(gameboard.isShipAt('(0,2)')).toBe(false); 
+    });
+
     test('does not allow placing ships out of bounds', () => {
         expect(gameboard.canPlaceShip(['(10,0)', '(10,1)', '(10,2)'])).toBeFalsy();
     });
@@ -50,5 +56,21 @@ describe('Gameboard', () => {
 
         gameboard.receiveAttack(0, 1); 
         expect(gameboard.allShipsSunk()).toBe(true); 
+    });
+
+    test('getSuccessfulAttacks returns the correct set of successful attacks', () => {
+        gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
+        gameboard.receiveAttack(0, 0);
+        gameboard.receiveAttack(1, 1); 
+        gameboard.receiveAttack(0, 1);
+        expect(Array.from(gameboard.getSuccessfulAttacks())).toEqual(['(0,0)', '(0,1)']); 
+    });
+
+    test('getMissedAttacks returns the correct set of missed attacks', () => {
+        gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
+        gameboard.receiveAttack(0, 0);
+        gameboard.receiveAttack(1, 1); 
+        gameboard.receiveAttack(0, 1);
+        expect(Array.from(gameboard.getMissedAttacks())).toEqual(['(1,1)']); 
     });
 });
