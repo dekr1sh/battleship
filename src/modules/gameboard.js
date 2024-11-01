@@ -2,7 +2,7 @@ import { Ship } from './ship.js';
 
 function Gameboard() {
     const gridSize = 10
-    const ships = [];
+    const shipsOnBoard = []; 
     const successfulAttacks = new Set();
     const missedAttacks = new Set();
     const board = {}; // Maps coordinates to ships
@@ -42,25 +42,20 @@ function Gameboard() {
         return false;
     }
 
-    function placeShip(length, coordinates) {
+    function canPlaceShip(coordinates) {
         for (const coord of coordinates) {
             const { x, y } = parseCoordinate(coord);
             if(!isInBounds(x,y)) {
-                throw new Error(`Cannot place ship: one or more coordinates are out of bounds.`);
+                return false;
             }
         }
         
-        if (areCoordinatesOccupied(coordinates)) {
-            throw new Error(`Cannot place ship: one or more coordinates are already occupied.`);
-        }
+        return !areCoordinatesOccupied(coordinates) && !areCoordinatesAdjacent(coordinates);
+    }
 
-        else if(areCoordinatesAdjacent(coordinates)) {
-            throw new Error(`Cannot place ship: one or more coordinates are adjacent.`)
-        }
-
+    function placeShip(length, coordinates) {
         const ship = Ship(length);
-        ships.push(ship);
-    
+        shipsOnBoard.push(ship);
         coordinates.forEach(coord => board[coord] = ship);
     }
 
@@ -80,10 +75,10 @@ function Gameboard() {
     }
 
     function allShipsSunk() {
-        return ships.every(ship => ship.isSunk());
+        return shipsOnBoard.every(ship => ship.isSunk());
     }
 
-    return { gridSize, placeShip, receiveAttack, allShipsSunk };
+    return { gridSize, canPlaceShip, placeShip, receiveAttack, allShipsSunk };
 };
 
 export {Gameboard};

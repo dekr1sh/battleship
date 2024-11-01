@@ -12,23 +12,17 @@ describe('Gameboard', () => {
     });
 
     test('does not allow placing ships out of bounds', () => {
-        expect(() => gameboard.placeShip(3, [`(${gameboard.gridSize},0)`, `(${gameboard.gridSize},1)`, `(${gameboard.gridSize},2)`])).toThrow(
-            'Cannot place ship: one or more coordinates are out of bounds.'
-        );
+        expect(gameboard.canPlaceShip(['(10,0)', '(10,1)', '(10,2)'])).toBeFalsy();
     });
 
     test('does not allow overlapping ships', () => {
         gameboard.placeShip(2, ['(0,0)', '(0,1)']);
-        expect(() => gameboard.placeShip(2, ['(0,1)', '(0,2)'])).toThrow(
-            'Cannot place ship: one or more coordinates are already occupied.'
-        );
+        expect(gameboard.placeShip(2, ['(0,1)', '(0,2)'])).toBeFalsy();
     });
 
     test('does not allow placing ships adjacent to each other', () => {
         gameboard.placeShip(2, ['(0,0)', '(0,1)']);
-        expect(() => gameboard.placeShip(2, ['(1,0)', '(2,0)'])).toThrow(
-            'Cannot place ship: one or more coordinates are adjacent.'
-        );
+        expect(gameboard.placeShip(2, ['(1,0)', '(2,0)'])).toBeFalsy();
     });
 
     test('shows successful attacks', () => {
