@@ -19,6 +19,10 @@ function Gameboard() {
         return Boolean(board[coord]);
     }
 
+    function getShipAt(coord) {
+        return board[coord];
+    }
+
     function isInBounds(x, y) {
         return x >= 0 && x < gridSize && y >= 0 && y < gridSize;
     }
@@ -108,6 +112,15 @@ function Gameboard() {
         return shipsOnBoard.length === 8;
     }
 
+    function clearShipsFromBoard() {
+        shipsOnBoard.length = 0;         
+        successfulAttacks.clear();       
+        missedAttacks.clear();           
+        for (const coord in board) {     
+            delete board[coord];
+        }
+    }
+
     function receiveAttack(x, y) {
         const coord = `(${x},${y})`;
         if (successfulAttacks.has(coord) || missedAttacks.has(coord)) {
@@ -128,8 +141,8 @@ function Gameboard() {
     }
 
     return {
-        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt,
-        canPlaceShip, placeShip, placeShipsRandomly, areAllShipsPlaced, receiveAttack, allShipsSunk
+        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt, getShipAt, canPlaceShip, placeShip, 
+        placeShipsRandomly, areAllShipsPlaced, clearShipsFromBoard, receiveAttack, allShipsSunk
     };
 };
 

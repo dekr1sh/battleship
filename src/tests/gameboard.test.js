@@ -31,6 +31,15 @@ describe('Gameboard', () => {
         expect(gameboard.placeShip(2, ['(1,0)', '(2,0)'])).toBeFalsy();
     });
 
+    test('clearShipsFromBoard resets the board correctly', () => {
+        gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
+        gameboard.clearShipsFromBoard();
+        
+        expect(gameboard.getSuccessfulAttacks().size).toBe(0);
+        expect(gameboard.getMissedAttacks().size).toBe(0);
+        expect(gameboard.isShipAt('(0,0)')).toBe(false);
+    });
+
     test('shows successful attacks', () => {
         gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
         expect(gameboard.receiveAttack(0, 0)).toBe("Attack hit a ship"); 
