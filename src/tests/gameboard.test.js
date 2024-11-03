@@ -31,13 +31,24 @@ describe('Gameboard', () => {
         expect(gameboard.placeShip(2, ['(1,0)', '(2,0)'])).toBeFalsy();
     });
 
+    test('clearShipsFromBoard resets the board correctly', () => {
+        gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
+        gameboard.clearShipsFromBoard();
+        
+        expect(gameboard.getSuccessfulAttacks().size).toBe(0);
+        expect(gameboard.getMissedAttacks().size).toBe(0);
+        expect(gameboard.isShipAt('(0,0)')).toBe(false);
+    });
+
     test('shows successful attacks', () => {
         gameboard.placeShip(3, ['(0,0)', '(0,1)', '(0,2)']);
         expect(gameboard.receiveAttack(0, 0)).toBe("Attack hit a ship"); 
+        expect(gameboard.getSuccessfulAttacks()).toContain('(0,0)');
     });
 
     test('shows missed attacks', () => {
         expect(gameboard.receiveAttack(1, 1)).toBe("Attack missed a ship"); 
+        expect(gameboard.getMissedAttacks()).toContain('(1,1)');
     });
 
     test('does not register duplicate attacks', () => {
@@ -47,15 +58,6 @@ describe('Gameboard', () => {
 
         expect(gameboard.receiveAttack(1, 1)).toBe("Attack missed a ship"); 
         expect(gameboard.receiveAttack(1, 1)).toBe("Attack not registered"); 
-    });
-
-    test('allShipsSunk() accurately reports the sinking status of all ships', () => {
-        gameboard.placeShip(2, ['(0,0)', '(0,1)']);
-        gameboard.receiveAttack(0, 0); 
-        expect(gameboard.allShipsSunk()).toBe(false); 
-
-        gameboard.receiveAttack(0, 1); 
-        expect(gameboard.allShipsSunk()).toBe(true); 
     });
 
     test('getSuccessfulAttacks returns the correct set of successful attacks', () => {
@@ -72,5 +74,14 @@ describe('Gameboard', () => {
         gameboard.receiveAttack(1, 1); 
         gameboard.receiveAttack(0, 1);
         expect(Array.from(gameboard.getMissedAttacks())).toEqual(['(1,1)']); 
+    });
+
+    test('allShipsSunk() accurately reports the sinking status of all ships', () => {
+        gameboard.placeShip(2, ['(0,0)', '(0,1)']);
+        gameboard.receiveAttack(0, 0); 
+        expect(gameboard.allShipsSunk()).toBe(false); 
+
+        gameboard.receiveAttack(0, 1); 
+        expect(gameboard.allShipsSunk()).toBe(true); 
     });
 });

@@ -3,10 +3,16 @@ import { Ship } from './ship.js';
 function Gameboard() {
     const gridSize = 10
     const shipsOnBoard = [];
+    const shipsToPlace = [
+        { length: 4, count: 2 },
+        { length: 3, count: 2 },
+        { length: 2, count: 2 },
+        { length: 1, count: 2 }
+    ];
     const successfulAttacks = new Set();
     const missedAttacks = new Set();
     const board = {}; // Maps coordinates to ships
-
+    
     function getSuccessfulAttacks() {
         return successfulAttacks;
     }
@@ -17,6 +23,10 @@ function Gameboard() {
 
     function isShipAt(coord) {
         return Boolean(board[coord]);
+    }
+
+    function getShipAt(coord) {
+        return board[coord];
     }
 
     function isInBounds(x, y) {
@@ -47,7 +57,7 @@ function Gameboard() {
                 `(${x - 1},${y + 1})`
             ];
 
-            if (adjacentCoords.some(adjCoord => Boolean(board[adjCoord]))) {
+            if (adjacentCoords.some(adjCoord => isShipAt(adjCoord))) {
                 return true;
             }
         }
@@ -72,13 +82,6 @@ function Gameboard() {
     }
 
     function placeShipsRandomly() {
-        const shipsToPlace = [
-            { length: 4, count: 2 },
-            { length: 3, count: 2 },
-            { length: 2, count: 2 },
-            { length: 1, count: 2 }
-        ];
-
         for (const { length, count } of shipsToPlace) {
             for (let i = 0; i < count; i++) {
                 let placed = false;
@@ -88,7 +91,6 @@ function Gameboard() {
                     const x = Math.floor(Math.random() * gridSize);
                     const y = Math.floor(Math.random() * gridSize);
 
-                    // Generate coordinates based on orientation
                     const coordinates = [];
                     for (let j = 0; j < length; j++) {
                         const coord = orientation === 'horizontal' ? `(${x},${y + j})` : `(${x + j},${y})`;
@@ -106,6 +108,15 @@ function Gameboard() {
 
     function areAllShipsPlaced() {
         return shipsOnBoard.length === 8;
+    }
+
+    function clearShipsFromBoard() {
+        shipsOnBoard.length = 0;         
+        successfulAttacks.clear();       
+        missedAttacks.clear();           
+        for (const coord in board) {     
+            delete board[coord];
+        }
     }
 
     function receiveAttack(x, y) {
@@ -128,8 +139,8 @@ function Gameboard() {
     }
 
     return {
-        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt,
-        canPlaceShip, placeShip, placeShipsRandomly, areAllShipsPlaced, receiveAttack, allShipsSunk
+        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt, getShipAt, canPlaceShip, placeShip, 
+        placeShipsRandomly, areAllShipsPlaced, clearShipsFromBoard, receiveAttack, allShipsSunk
     };
 };
 
