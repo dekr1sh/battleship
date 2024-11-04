@@ -45,11 +45,10 @@ function renderBoard(boardElement, gameboard, showShipsAlways = true) {
         const y = +cell.dataset.y;
         const coord = `(${x},${y})`;
 
-        cell.classList.remove('show', 'ship', 'hit', 'miss', 'sunk');
+        cell.classList.remove('show', 'hit', 'miss', 'sunk');
 
         if (gameboard.isShipAt(coord)) {
             const ship = gameboard.getShipAt(coord);
-            cell.classList.add('ship');
             if (showShipsAlways) {
                 cell.classList.add('show');
             }
@@ -75,7 +74,7 @@ function handleCellClick(event) {
     const y = +event.target.dataset.y;
 
     const attackResult = player.attack(computer.gameboard, x, y);
-    renderBoard(computerBoardElement, computer.gameboard);
+    renderBoard(computerBoardElement, computer.gameboard, false);
 
     if (attackResult === "Attack not registered") {
         return; 
@@ -93,7 +92,7 @@ function handleCellClick(event) {
 
 function computerTurn() {
     let attackResult = computer.attack(player.gameboard);
-    renderBoard(playerBoardElement, player.gameboard, false);
+    renderBoard(playerBoardElement, player.gameboard);
 
     if (player.gameboard.allShipsSunk()) {
         endGame('Computer');
@@ -157,6 +156,7 @@ exitBtn.addEventListener('click', () => {
 });
 
 randomBtn.addEventListener('click', () => {
+    player.gameboard.clearShipsFromBoard();
     player.gameboard.placeShipsRandomly();
     renderBoard(playerBoardElement, player.gameboard);
 });
