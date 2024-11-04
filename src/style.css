@@ -1,18 +1,10 @@
-/* --- --- --- --- --- BASE --- --- --- --- --- --- */
 html {
     font-size: 100%;
-    box-sizing: border-box;
-}
-
-*, *::before, *::after {
-    box-sizing: inherit;
-    margin: 0;
-    padding: 0;
 }
 
 body {
     min-height: 100vh;
-    margin: 0;
+    margin: 0px;
     font-family: Arial, sans-serif;
     color: #333;
     background-image: linear-gradient(135deg, #e9ecef 0%, #f1f3f5 100%);
@@ -31,12 +23,6 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    position: sticky;
-    top: 0;
-    z-index: 10;
 }
 
 /* --- --- --- --- --- MAIN --- --- --- --- --- --- */
@@ -45,104 +31,197 @@ main {
     flex: auto;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    row-gap: 10px;
-    background-color: #f9fafc;
+    row-gap: 25px;
 }
 
-/* --- Turn Display --- */
-#turnDisplay {
-    height: 22px;
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    background-color: #333;
-    color: #fff;
-    font-weight: bold;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+#turnDisplay, #resultDisplay {
+    height: 28px;
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #005f5f;
 }
 
-/* --- Container Wrapper --- */
 #containerWrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
     flex-wrap: wrap;
     gap: 50px;
-    padding: 20px;
+}
+
+#containerWrapper > section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
+}
+
+section > div:first-child {
+    font-weight: 500;
+    font-size: 1.25rem;
 }
 
 /* --- --- --- --- --- BOARD --- --- --- --- --- --- */
 .board {
+    border: 1px solid #273547e7 ;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     display: grid;
-    grid-template-columns: repeat(10, 40px);
-    grid-template-rows: repeat(10, 40px);
-    border: 2px solid #ccc;
-    background-color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(10, 30px);
 }
 
-.board:hover {
-    transform: scale(1.02);
-}
-
-/* --- --- --- --- --- CELL --- --- --- --- --- --- */
 .cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    font-size: 1.2rem;
-    color: #333;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
+    z-index: 0;
     position: relative;
 }
 
-.cell:hover {
-    background-color: #f7f7f7;
-    transform: scale(1.05);
+.cell::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: -1px;
+    margin-left: -1px;
+    border-top: solid #0065d83b 1px;
+    border-left: solid #0065d83b 1px;
+    z-index: 1;
 }
 
-.cell.hit::before {
-    content: 'X';
-    color: #d9534f;
-    font-weight: bold;
+.show {
+    position: relative;
+    box-shadow: #0065d8 0 0 0 2px;
+    z-index: auto;
+    margin: 0;
 }
 
-.cell.miss::before {
-    content: '.';
-    color: #999;
+.show::before {
+    content: "";
+    position: absolute;
+    border-top: solid #0065d83b 1px;
+    border-left: solid #0065d83b 1px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f0f5ff;
+    border: none;
+    box-shadow: none;
+    z-index: 1;
 }
 
-.cell.ship.show {
-    background-color: #007bff; /* Ship color when visible */
-    color: #fff;
+.miss {
+    position: relative;
+    margin-top: -1px;
+    margin-left: -1px;
+    border-top: solid #0065d83b 1px;
+    border-left: solid #0065d83b 1px;
 }
 
-.cell.sunk {
-    background-color: #5a6268; /* Darker color to indicate sunk status */
-    color: #fff;
-    font-weight: bold;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+.miss::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -4px;
+    border-radius: 50%;
+    background-color: #000000a9;
 }
 
-/* --- --- --- --- --- BUTTON STYLING --- --- --- --- --- --- */
+.hit {
+    position: relative;
+    z-index: auto;
+    box-shadow: #0065d8 0 0 0 2px;
+}
+
+.hit::before {
+    content: "";
+    text-align: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f0f5ff;
+    z-index: 3;
+}
+
+.hit::after {
+    content: "✕";
+    color: #004fa8;
+    font-size: 1.5em;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.sunk {
+    position: relative;
+    z-index: auto;
+    border: none;
+    cursor: default;
+}
+
+.sunk::before {
+    content: "";
+    text-align: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #6097d6;
+    z-index: 4;
+}
+
+.sunk::after {
+    content: "✕";
+    color: white;
+    font-size: 1.5em;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 6;
+}
+
+#containerTwo .cell:hover:not(.hit, .miss) {
+    background-color: #8585851c;
+    cursor: pointer;
+}
+
+/* --- --- --- --- --- BUTTONS --- --- --- --- --- --- */ 
+.board-btns {
+    display: flex;
+    column-gap: 10px;
+}
+
+.board-btns.hidden {
+    display: flex;
+    visibility: hidden;  /* still part of the normal flow of document but no longer interactive */
+}
+
 button {
     padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     font-size: 1rem;
     color: #fff;
     background-color: #007bff;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
 }
 
 button:hover {
@@ -152,6 +231,11 @@ button:hover {
 
 button:active {
     background-color: #00408a;
+}
+
+#startBtn, #exitBtn {
+    font-weight: 500;
+    font-size: 1.25rem;
 }
 
 .hidden {
@@ -166,8 +250,6 @@ footer {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background-color: #f1f3f5;
-    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #footerText {
@@ -183,18 +265,3 @@ footer a {
 footer a:hover {
     color: #888;
 }
-
-/* --- --- --- --- --- SCROLLBAR --- --- --- --- --- --- */
-body::-webkit-scrollbar {
-    width: 10px;
-}
-
-body::-webkit-scrollbar-thumb {
-    background-color: #333;
-    border-radius: 5px;
-}
-
-body::-webkit-scrollbar-track {
-    background-color: #f1f3f5;
-}
-
