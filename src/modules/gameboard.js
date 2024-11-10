@@ -1,4 +1,5 @@
 import { Ship } from './ship.js';
+import { isInBounds, parseCoordinate, getAdjacentCoordinates } from './utility.js'
 
 function Gameboard() {
     const gridSize = 10
@@ -29,33 +30,14 @@ function Gameboard() {
         return board[coord];
     }
 
-    function isInBounds(x, y) {
-        return x >= 0 && x < gridSize && y >= 0 && y < gridSize;
-    }
-
-    function parseCoordinate(coord) {
-        const [x, y] = coord.match(/\d+/g).map(strNum => +strNum);
-        return { x, y };
-    }
-
     function areCoordinatesOccupied(coordinates) {
         return coordinates.some(coord => isShipAt(coord));
     }
 
-    function areCoordinatesAdjacent(coordinates) {
+    function areAdjacentCoordinatesOccupied(coordinates) {
         for (const coord of coordinates) {
             const { x, y } = parseCoordinate(coord);
-
-            const adjacentCoords = [
-                `(${x + 1},${y})`,
-                `(${x - 1},${y})`,
-                `(${x},${y + 1})`,
-                `(${x},${y - 1})`,
-                `(${x + 1},${y + 1})`,
-                `(${x - 1},${y - 1})`,
-                `(${x + 1},${y - 1})`,
-                `(${x - 1},${y + 1})`
-            ];
+            const adjacentCoords = getAdjacentCoordinates(x, y);
 
             if (adjacentCoords.some(adjCoord => isShipAt(adjCoord))) {
                 return true;
@@ -72,7 +54,7 @@ function Gameboard() {
             }
         }
 
-        return !areCoordinatesOccupied(coordinates) && !areCoordinatesAdjacent(coordinates);
+        return !areCoordinatesOccupied(coordinates) && !areAdjacentCoordinatesOccupied(coordinates);
     }
 
     function placeShip(length, coordinates) {
