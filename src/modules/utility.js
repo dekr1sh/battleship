@@ -8,7 +8,7 @@ function isInBounds(x, y) {
 }
 
 function parseCoordinate(coord) {
-    const [x, y] = coord.match(/\d+/g).map(strNum => +strNum);
+    const [x, y] = coord.match(/-?\d+/g).map(strNum => +strNum);
     return { x, y };
 }
 
@@ -19,10 +19,6 @@ function getAdjacentCoordinates(x, y) {
     ];
 }
 
-function getVerticalHorizontalAdjacentCoordinates(x, y) {
-    return [`(${x + 1},${y})`, `(${x - 1},${y})`, `(${x},${y + 1})`, `(${x},${y - 1})`];
-}
-
 function getRandomCoordinates() {
     const x = Math.floor(Math.random() * gridSize);
     const y = Math.floor(Math.random() * gridSize);
@@ -31,6 +27,5 @@ function getRandomCoordinates() {
 }
 
 export {
-    isInBounds, parseCoordinate, getAdjacentCoordinates, 
-    getVerticalHorizontalAdjacentCoordinates, getRandomCoordinates
+    isInBounds, parseCoordinate, getAdjacentCoordinates, getRandomCoordinates
 };

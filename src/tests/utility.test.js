@@ -2,7 +2,6 @@ import {
     isInBounds,
     parseCoordinate,
     getAdjacentCoordinates,
-    getVerticalHorizontalAdjacentCoordinates,
     getRandomCoordinates
 } from '../modules/utility.js';
 
@@ -30,11 +29,6 @@ describe('Utility functions', () => {
             '(4,4)', '(2,4)', '(3,5)', '(3,3)',
             '(4,5)', '(2,3)', '(4,3)', '(2,5)'
         ]);
-    });
-
-    test('getVerticalHorizontalAdjacentCoordinates should return only vertical and horizontal adjacent coordinates', () => {
-        const adjacent = getVerticalHorizontalAdjacentCoordinates(3, 4);
-        expect(adjacent).toEqual(['(4,4)', '(2,4)', '(3,5)', '(3,3)']);
     });
 
     test('getRandomCoordinates should return coordinates within bounds', () => {

@@ -75,7 +75,7 @@ function Gameboard() {
 
                     const coordinates = [];
                     for (let j = 0; j < length; j++) {
-                        const coord = orientation === 'horizontal' ? `(${x},${y + j})` : `(${x + j},${y})`;
+                        const coord = orientation === 'horizontal' ? `(${x + j},${y})` : `(${x},${y + j})`;
                         coordinates.push(coord);
                     }
 
@@ -116,13 +116,51 @@ function Gameboard() {
         }
     }
 
-    function allShipsSunk() {
-        return shipsOnBoard.every(ship => ship.isSunk());
+    function getSunkShips(){
+        return shipsOnBoard.filter(ship => ship.isSunk());
+    }
+
+    function getSunkShipsCoords(){
+        const sunkShipsArr = getSunkShips();
+        const sunkShipsCoords = new Set();
+
+        for(const coord in board){
+            for(const sunkShip of sunkShipsArr){
+                if(board[coord] === sunkShip){
+                    sunkShipsCoords.add(coord);
+                    break;
+                }
+            }
+        }
+        return sunkShipsCoords;
+    }
+
+    function getSunkShipsAdjacentCoords(){
+        const sunkShipsCoords = getSunkShipsCoords();
+        const sunkShipsAdjacentCoords = new Set();
+
+        sunkShipsCoords.forEach(coord => {
+            const {x, y} = parseCoordinate(coord);
+            const adjacentCoords = getAdjacentCoordinates(x, y);
+
+            adjacentCoords.forEach(adjacentCoord => {
+                const {x: adjX, y: adjY} = parseCoordinate(adjacentCoord);
+                if(isInBounds(adjX, adjY) && !sunkShipsCoords.has(adjacentCoord)){
+                    sunkShipsAdjacentCoords.add(adjacentCoord);
+                }
+            })
+        })
+        return sunkShipsAdjacentCoords;
+    }
+
+    function areAllShipsSunk() {
+        const sunkShipsArr = getSunkShips();
+        return sunkShipsArr.length === shipsOnBoard.length;
     }
 
     return {
-        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt, getShipAt, canPlaceShip, placeShip, 
-        placeShipsRandomly, areAllShipsPlaced, clearShipsFromBoard, receiveAttack, allShipsSunk
+        gridSize, getSuccessfulAttacks, getMissedAttacks, isShipAt, getShipAt, canPlaceShip, placeShip, placeShipsRandomly,
+        areAllShipsPlaced, clearShipsFromBoard, receiveAttack, getSunkShipsAdjacentCoords, areAllShipsSunk
     };
 };
 

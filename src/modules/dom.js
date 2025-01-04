@@ -9,8 +9,8 @@ const exitBtn = document.getElementById('exitBtn');
 const boardBtns = document.querySelector('.board-btns');
 const randomBtn = document.querySelector('.random-btn');
 
-const player = new Player('human');
-const computer = new Player('computer');
+const player = Player('human');
+const computer = Player('computer');
 let isPlayerTurn = true;
 
 function emptyBoard(boardElement){
@@ -23,8 +23,8 @@ function createBoard(boardElement) {
         for (let j = 0; j < gridSize; j++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
-            cell.dataset.x = i;
-            cell.dataset.y = j;
+            cell.dataset.x = j;
+            cell.dataset.y = i;
             boardElement.appendChild(cell);
         }
     }
@@ -84,7 +84,7 @@ function handleCellClick(event) {
         updateTurnDisplay();
         setTimeout(computerTurn, 1000);
     }
-    else if (computer.gameboard.allShipsSunk()) {
+    else if (computer.gameboard.areAllShipsSunk()) {
         endGame('Player');
         return;
     }
@@ -94,18 +94,14 @@ function computerTurn() {
     let attackResult = computer.attack(player.gameboard);
     renderBoard(playerBoardElement, player.gameboard);
 
-    if (player.gameboard.allShipsSunk()) {
+    if (player.gameboard.areAllShipsSunk()) {
         endGame('Computer');
         return;
     }
-
-    if (attackResult === "Attack not registered") {
-        computerTurn();
-    } 
     else if (attackResult === "Attack hit a ship") {
         setTimeout(computerTurn, 1000);
     } 
-    else {
+    else if (attackResult === "Attack missed a ship"){
         isPlayerTurn = true;
         updateTurnDisplay();
     }

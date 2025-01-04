@@ -23,12 +23,12 @@ describe('Gameboard', () => {
 
     test('does not allow overlapping ships', () => {
         gameboard.placeShip(2, ['(0,0)', '(0,1)']);
-        expect(gameboard.placeShip(2, ['(0,1)', '(0,2)'])).toBeFalsy();
+        expect(gameboard.canPlaceShip(['(0,1)', '(0,2)'])).toBeFalsy();
     });
 
     test('does not allow placing ships adjacent to each other', () => {
         gameboard.placeShip(2, ['(0,0)', '(0,1)']);
-        expect(gameboard.placeShip(2, ['(1,0)', '(2,0)'])).toBeFalsy();
+        expect(gameboard.canPlaceShip(['(1,0)', '(2,0)'])).toBeFalsy();
     });
 
     test('clearShipsFromBoard resets the board correctly', () => {
@@ -76,12 +76,26 @@ describe('Gameboard', () => {
         expect(Array.from(gameboard.getMissedAttacks())).toEqual(['(1,1)']); 
     });
 
-    test('allShipsSunk() accurately reports the sinking status of all ships', () => {
+    test('getSunkShipsAdjacentCoords accurately gives the adjacent coords of all the sunk ships', () => {
         gameboard.placeShip(2, ['(0,0)', '(0,1)']);
         gameboard.receiveAttack(0, 0); 
-        expect(gameboard.allShipsSunk()).toBe(false); 
+        gameboard.receiveAttack(0, 1);
+
+        const sunkShipsAdjacentCoords = gameboard.getSunkShipsAdjacentCoords();
+        const expectedCoords = new Set(['(0,2)', '(1,0)', '(1,1)', '(1,2)']);
+
+        sunkShipsAdjacentCoords.forEach(coord => {
+            expect(expectedCoords.has(coord)).toBe(true);
+        });
+        expect(sunkShipsAdjacentCoords.size).toBe(expectedCoords.size);
+    });
+
+    test('areAllShipsSunk() accurately reports the sinking status of all ships', () => {
+        gameboard.placeShip(2, ['(0,0)', '(0,1)']);
+        gameboard.receiveAttack(0, 0); 
+        expect(gameboard.areAllShipsSunk()).toBe(false); 
 
         gameboard.receiveAttack(0, 1); 
-        expect(gameboard.allShipsSunk()).toBe(true); 
+        expect(gameboard.areAllShipsSunk()).toBe(true); 
     });
 });
